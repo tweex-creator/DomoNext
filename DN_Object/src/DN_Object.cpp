@@ -140,12 +140,7 @@ void DN_Object::proceedCom(JsonDocument& respons)
 	//Recuperaton du multiComHeader
 
 	DynamicJsonDocument multiComHeaderJson(200);
-	Serial.print("mem:");
-	Serial.println(multiComHeaderJson.memoryUsage());
 	multiComHeaderJson = respons["multiComHeader"];
-
-	Serial.print("mem:");
-	Serial.println(multiComHeaderJson.memoryUsage());
 
 
 	//Verification de la présence des éléments obligatoires
@@ -163,26 +158,39 @@ void DN_Object::proceedCom(JsonDocument& respons)
 	com = getComFromId(comId);
 	if (com == nullptr) {
 		if (step == 0) {
-			Serial.println("[COM] proceedCom setp 0");
 			proceedNewCom(multiComHeaderJson);
-			Serial.println("[COM] proceedCom setp 0 done0");
-
 		}
-		Serial.println("[COM] proceedCom setp 0 done 1");
+		else {
+			Serial.println("[COM] unknow com");
+		}
 		return;
-		Serial.println("[COM] proceedCom setp 0 done1.1");
-
 	}
 
+	if (com->step < 0) {//si la com est en erreur on repond par une demande de fermeeture de connection
+		DynamicJsonDocument message(300);
+		JsonObject multiComHeaderJsonSend = message.createNestedObject("multiComHeader");;
+		char topic[54];
+		multiComHeaderJsonSend["comId"] = com->comId;
+		multiComHeaderJsonSend["step"] = com->step;
+		multiComHeaderJsonSend["duplicationSafe"] = duplicationSafe + 1;
+		multiComHeaderJsonSend["endCom"] = true;
+		sprintf(topic, "com/%s/multiCom", com->externalDeviceId);
+		char msg[200];
+		serializeJson(message, &msg, 1024);
+		brokerMqtt.sendMessage(topic, msg);
+		Serial.println("[COM] Com in error received -> sending close");
+
+		return;
+	}
+	else {
+		yieldComLogger(com);
+	}
 	if (!checkDuplicationSafe(com, step, duplicationSafe)) {
 		Serial.println("[COM] Reception doublon");
 		return;
 	}
-	yieldComLogger(com);
 
 	if (step == 1) {
-		Serial.println("[COM] proceedCom setp 1");
-
 		//Verification de la présence des éléments obligatoires
 		if (multiComHeaderJson["success"].isNull()) {
 			Serial.println("[COM] multicom header missed succeess (proceedCom setp == 1)");
@@ -190,11 +198,13 @@ void DN_Object::proceedCom(JsonDocument& respons)
 		}
 		bool success = multiComHeaderJson["success"];
 		if (success) {
-			strcpy(com->lastReceived, "{\"comInit\": true}"); // on place un message vide
+			strcpy(com->lastReceived, "{\"comStatus\": \"open\"}"); // on place un message vide
 			com->newMessageFlag = 1;
+			
+
 		}
 		else {
-			strcpy(com->lastReceived, "{\"comInit\": false}"); // on place un message vide
+			strcpy(com->lastReceived, "{\"comStatus\": \"failed\"}"); // on place un message vide
 			com->newMessageFlag = 1;
 		}
 	}
@@ -229,8 +239,6 @@ void DN_Object::proceedNewCom(JsonDocument& multiComHeaderJson)
 	char msg[1024];
 
 	if (comNo != (-1)) {
-		Serial.println("weeeeeeeeeeeeeel");
-
 		com = getComFromNo(comNo);
 		if (com == nullptr) { Serial.println("[COM] Erreur lors de la recuperation de la com Crée (proceedNewCom)"); return; }
 		setupComLogger(com, comId, externalDeviceId, comTimeout, duplicationSafe, step);
@@ -395,6 +403,34 @@ void DN_Object::updateComLoggerLastSend(comLogger* com, const char lastSend[500]
 	strcpy(com->lastSend, lastSend);
 }
 
+void DN_Object::handleTimeOut()
+{
+	unsigned long timeNow = millis();
+	for (int i = 0; i < MAX_COM_CHANNELS; i++) {
+		if (comMap[i].used) {
+			if (!isComLoggerAlive(&comMap[i]) || comMap[i].endCom) {
+				if (comMap[i].step == -2){
+					freeComLogger(&comMap[i]);
+					comMap[i].step == -1;
+					Serial.print("com[");
+					Serial.print(comMap[i].comId);
+					Serial.println("] definetly closed");
+				}
+				else {
+					strcpy(comMap[i].lastReceived, "{\"comStatus\": \"timedOut\"}"); // on place un message vide
+					comMap[i].lastActivity == timeNow;
+					comMap[i].newMessageFlag = true;
+					Serial.print("com[");
+					Serial.print(comMap[i].comId);
+					Serial.println("] timed out");
+					comMap[i].step = -2;
+				}
+				
+			}
+		}
+	}
+}
+
 bool DN_Object::availableMsgCom(int comNo)
 {
 	comLogger* com = getComFromNo(comNo);
@@ -498,6 +534,7 @@ void DN_Object::handle()
 	else {
 
 	}*/
+	handleTimeOut();
 
 }
 

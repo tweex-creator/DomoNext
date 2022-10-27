@@ -27,11 +27,12 @@ struct comLogger {//stock les informations sur les communications en cours
 	bool used;//indique si la com est actuellement utilisée
 	unsigned int comNum;//numero local de la com( different de l'emplacement dans le tbl askMap) voir getComId	
 	unsigned long lastActivity;//stock le millis() de la dernière activité. Permet de liberer la ressource si elle n'est plus utilisé.
+	
 	char comId[26];//L'id de la communication(le meme sur les deux appareils)
 	int comTimeout;
 	char externalDeviceId[19];
 	int duplicationSafe;
-	int step;
+	int step;//Inidque la progression de la communication, 0: demande d'ouverture, 2: reponse , +1 a chque message, -2 com timedOut
 	char lastSend[500];
 	char lastReceived[500];
 	bool newMessageFlag;// true si un nouveau message n'a pas été lue, repasse à 0 à la lecture
@@ -90,7 +91,7 @@ private:
 	void freeComLogger(comLogger* com);//libère la connection (attention il ne s'agit pas d'un moyend efermer proprement une connexion)
 	bool checkDuplicationSafe(const comLogger* comLocal, const int receivedStep, const int receivedDuplicationSafe);
 	void updateComLoggerLastSend(comLogger* com, const char lastSend[500]);
-
+	void handleTimeOut();
 
 
 
@@ -103,7 +104,7 @@ private:
 	DN_WIFIClass& wifiManager;
 	DynamicJsonDocument data;
 
-	comLogger comMap[MAX_COM_CHANNELS]; // nullptr si non assigné
+	comLogger comMap[MAX_COM_CHANNELS];
 
 
 	unsigned long timeoutServerConnetionCurrent;
