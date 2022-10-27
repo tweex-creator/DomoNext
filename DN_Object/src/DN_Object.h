@@ -27,7 +27,7 @@ struct comLogger {//stock les informations sur les communications en cours
 	bool used;//indique si la com est actuellement utilisée
 	unsigned int comNum;//numero local de la com( different de l'emplacement dans le tbl askMap) voir getComId	
 	unsigned long lastActivity;//stock le millis() de la dernière activité. Permet de liberer la ressource si elle n'est plus utilisé.
-	
+	bool sendAllow; //permet de ne pas permettre au programme d'envoyer un nouveau message tant qu'il n'a pas recus de reponse
 	char comId[26];//L'id de la communication(le meme sur les deux appareils)
 	int comTimeout;
 	char externalDeviceId[19];
@@ -37,6 +37,7 @@ struct comLogger {//stock les informations sur les communications en cours
 	char lastReceived[500];
 	bool newMessageFlag;// true si un nouveau message n'a pas été lue, repasse à 0 à la lecture
 	bool endCom; // indique si la communication est terminée et donc si il faut renvoyer une réponse
+
 };
 
 class DN_Object :DN_INTERFACEMQTT
@@ -51,16 +52,20 @@ public:
 	bool isInJsonArray(const char* value, const JsonArray array);
 
 
-	int initCom(char* externalDeviceId);
+	int initCom(char* externalDeviceId, const unsigned int timeOut = 5000);
 
 	bool availableMsgCom(int comNo);//True si un message attend d'etre lu sur la communication
 	bool readMsgCom(int comNo, char* message/*OUT*/, bool ghost = false/*si vraie, le message ne sera pas marqué comme lu. ! Vous ne pourrez pas envoyer de message tant qu'il ne sera pas lu*/);//retourne faux si le message n'a pas pu être lue
 	void closeCom(const char comId[26]);
-
+	void sendMsgCom(int comNo, char* msg, bool endCom);
+	void closeCom(int comNo); //Ferme la connexion dont le num est passée en paramètre
+	
+	
+	void closeChannel(int channelNo); //Deprecated, Ferme la connexion dont le num est passée en paramètre
+	
 	void printComUsage();
 
-	void closeCom(int comNo); //Ferme la connexion dont le num est passée en paramètre
-	void closeChannel(int channelNo); //Ferme la connexion dont le num est passée en paramètre
+	
 
 	void init();
 
@@ -97,6 +102,7 @@ private:
 
 	void proceedCom(JsonDocument& respons);
 	void proceedNewCom(JsonDocument& multiComHeaderJson);
+	void forceCloseCom(comLogger* com);
 
 	void sendJsonDocOverMqtt(JsonDocument& message, char* topic);
 	DN_MQTTclass& brokerMqtt;

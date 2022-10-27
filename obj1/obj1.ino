@@ -35,38 +35,46 @@ void setup() {
 
 
 	obj1.init();
+	Serial.println("!!obj1!!");
 }
 
 unsigned long temps = 0;
 int comNo = -1;
 bool onlyOne = true;
 
+unsigned long time_ = 0;
 void loop()
 {	
 	wifiManagerGlobal.handle();
 	mqttManagerGlobal.handle();
 	deviceIdGlobal.handle();
 	obj1.handle();
-
-	if (true) {
-
-		if (mqttManagerGlobal.isConnected()) {
-			if (onlyOne) {
-				Serial.println("send");
-				onlyOne = false;
-				obj1.closeChannel(1);
-				comNo = obj1.initCom("AC:0B:FB:DD:13:43");
-			}
+	if (mqttManagerGlobal.isConnected()) {
+		if (millis() - time_ > 20000) {
+			time_ = millis();
+			comNo = obj1.initCom("AC:0B:FB:DD:13:43", 6000);
+			obj1.printComUsage();
 		}
 		if (comNo != -1) {
 			if (obj1.availableMsgCom(comNo)) {
-				Serial.println("msg available");
+				//Serial.println("msg available");
 				char msg[500];
 				obj1.readMsgCom(comNo, msg);
 				Serial.print("msg recus via com(");
 				Serial.print(comNo);
 				Serial.print("): ");
 				Serial.println(msg);
+				DynamicJsonDocument msgDoc(200);
+				deserializeJson(msgDoc, msg);
+
+				if (msgDoc.containsKey("comStatus")) {
+					if (strcmp(msgDoc["comStatus"],"open") == 0) {
+						Serial.println("open");
+						obj1.sendMsgCom(comNo, "{\"dataTest\": true}",true);
+					}
+				}
+				
+				
 			}
 		}
 	}

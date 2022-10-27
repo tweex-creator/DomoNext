@@ -32,6 +32,8 @@ void setup() {
 
 
 	obj1.init();
+	Serial.println("!!obj2!!");
+
 }
 
 unsigned long temps = 0;
@@ -45,4 +47,5 @@ void loop()
 	mqttManagerGlobal.handle();
 	deviceIdGlobal.handle();
 	obj1.handle();
+
 }

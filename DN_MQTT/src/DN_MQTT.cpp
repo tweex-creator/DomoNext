@@ -140,7 +140,6 @@ void DN_MQTTclass::callback(char* topic, byte* payload, unsigned int length)
 			if (receiver[i] != nullptr) {
 				//serializeJsonPretty(docMsgReceived, Serial);
 				receiver[i]->handleMqttMsg(docMsgReceived);
-				Serial.println("[COM] proceedCom setp 0 done 3");
 
 			}
 		}
