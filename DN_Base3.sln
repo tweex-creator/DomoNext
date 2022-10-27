@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DN_Base3", "DN_Base3\DN_Base3.vcxproj", "{C5F80730-F44F-4478-BDAE-6634EFC2CA88}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dn_Memory", "Dn_Memory\Dn_Memory.vcxitems", "{811288BB-F071-4DCF-9AB6-ACC4AAAC0FDA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DN_DeviceId", "DN_DeviceId\DN_DeviceId.vcxitems", "{F35B6EA3-5315-4CF7-8398-7F84E8D4FC5B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DN_WIFI", "DN_WIFI\DN_WIFI.vcxitems", "{21A71ACF-C76B-4E99-88C7-05B045CE8E16}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DN_MQTT", "DN_MQTT\DN_MQTT.vcxitems", "{54B60E58-6EBA-4CE7-8F1E-0112B722896E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DN_Object", "DN_Object\DN_Object.vcxitems", "{C5D309AD-C875-4E8F-92D5-56D16925653D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArduinoJson", "ArduinoJson\ArduinoJson.vcxitems", "{59FD9E30-74D2-4ABF-872A-C0FD4FAAA542}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.ActiveCfg = Debug|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.Build.0 = Debug|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.ActiveCfg = Release|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {55D40FB7-FC00-485E-A5EB-14C5ABDD52A7}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		DN_WIFI\DN_WIFI.vcxitems*{21a71acf-c76b-4e99-88c7-05b045ce8e16}*SharedItemsImports = 9
+		DN_MQTT\DN_MQTT.vcxitems*{54b60e58-6eba-4ce7-8f1e-0112b722896e}*SharedItemsImports = 9
+		ArduinoJson\ArduinoJson.vcxitems*{59fd9e30-74d2-4abf-872a-c0fd4faaa542}*SharedItemsImports = 9
+		Dn_Memory\Dn_Memory.vcxitems*{811288bb-f071-4dcf-9ab6-acc4aaac0fda}*SharedItemsImports = 9
+		DN_Object\DN_Object.vcxitems*{c5d309ad-c875-4e8f-92d5-56d16925653d}*SharedItemsImports = 9
+		ArduinoJson\ArduinoJson.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		DN_DeviceId\DN_DeviceId.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		Dn_Memory\Dn_Memory.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		DN_MQTT\DN_MQTT.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		DN_Object\DN_Object.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		DN_WIFI\DN_WIFI.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		DN_DeviceId\DN_DeviceId.vcxitems*{f35b6ea3-5315-4cf7-8398-7f84e8d4fc5b}*SharedItemsImports = 9
+	EndGlobalSection
+EndGlobal
