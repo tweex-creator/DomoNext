@@ -58,7 +58,7 @@ void DN_Object::subMqtt()
 		sprintf(msg, "moved to id: %s", id);
 		brokerMqtt.sendMessage(topic, msg);
 
-		brokerMqtt.printSubscribtions();
+		//brokerMqtt.printSubscribtions();
 	}
 	deviceId.getId(lastSubId);//on met a jour le dernier id sauvegardé
 }
@@ -484,7 +484,7 @@ bool DN_Object::readMsgCom(int comNo, char* message, bool ghost)
 {
 	comLogger* com = getComFromNo(comNo);
 	if (com == nullptr) {
-		strcpy(message, "");
+		strcpy(message, "{}");
 		return false;
 	}
 	if (com->newMessageFlag) {

@@ -196,7 +196,7 @@ void DN_MQTTclass::connectMainMqtt()
 		if (client.connect(mac)) {
 			Serial.println(" | MQTT connection OK");
 			subsribeToAll();
-			Serial.println("sub all ok");
+			//Serial.println("sub all ok");
 
 		}
 		else {
@@ -302,8 +302,8 @@ bool DN_MQTTclass::subscribe(const char topic[NB_MAX_LEN_TOPIC])
 		if (strcmp(topicToSub[i], "") == 0) {
 			strcpy(topicToSub[i], topic);
 
-			Serial.print("sub: ");
-			Serial.println(client.subscribe(topic));
+			//Serial.print("sub: ");
+			//Serial.println(client.subscribe(topic));
 
 			//subsribeToAll();
 			return true;

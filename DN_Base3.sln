@@ -25,6 +25,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DN_Value_int", "DN_Value_in
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DN_Value", "DN_Value\DN_Value.vcxitems", "{107F2483-8C72-4738-81B3-E41D6FB938A8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DN_ComManager", "DN_ComManager\DN_ComManager.vcxitems", "{6BF23690-90C5-4E35-9264-DCBB31957462}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DN_ComEntity", "DN_ComEntity\DN_ComEntity.vcxitems", "{A325C672-2CA7-400A-88B3-E58CD2A4EA8F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -53,6 +57,8 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		DN_Value\DN_Value.vcxitems*{107f2483-8c72-4738-81b3-e41d6fb938a8}*SharedItemsImports = 9
 		ArduinoJson\ArduinoJson.vcxitems*{1835885c-69ab-4c95-884f-cfb35c00d3bf}*SharedItemsImports = 4
+		DN_ComEntity\DN_ComEntity.vcxitems*{1835885c-69ab-4c95-884f-cfb35c00d3bf}*SharedItemsImports = 4
+		DN_ComManager\DN_ComManager.vcxitems*{1835885c-69ab-4c95-884f-cfb35c00d3bf}*SharedItemsImports = 4
 		DN_DeviceId\DN_DeviceId.vcxitems*{1835885c-69ab-4c95-884f-cfb35c00d3bf}*SharedItemsImports = 4
 		Dn_Memory\Dn_Memory.vcxitems*{1835885c-69ab-4c95-884f-cfb35c00d3bf}*SharedItemsImports = 4
 		DN_MQTT\DN_MQTT.vcxitems*{1835885c-69ab-4c95-884f-cfb35c00d3bf}*SharedItemsImports = 4
@@ -64,8 +70,11 @@ Global
 		DN_Value_int\DN_Value_int.vcxitems*{35335166-566b-400e-9414-619ff64de74f}*SharedItemsImports = 9
 		DN_MQTT\DN_MQTT.vcxitems*{54b60e58-6eba-4ce7-8f1e-0112b722896e}*SharedItemsImports = 9
 		ArduinoJson\ArduinoJson.vcxitems*{59fd9e30-74d2-4abf-872a-c0fd4faaa542}*SharedItemsImports = 9
+		DN_ComManager\DN_ComManager.vcxitems*{6bf23690-90c5-4e35-9264-dcbb31957462}*SharedItemsImports = 9
 		Dn_Memory\Dn_Memory.vcxitems*{811288bb-f071-4dcf-9ab6-acc4aaac0fda}*SharedItemsImports = 9
 		ArduinoJson\ArduinoJson.vcxitems*{83a152f0-e29a-4030-8341-6dab30d7f14f}*SharedItemsImports = 4
+		DN_ComEntity\DN_ComEntity.vcxitems*{83a152f0-e29a-4030-8341-6dab30d7f14f}*SharedItemsImports = 4
+		DN_ComManager\DN_ComManager.vcxitems*{83a152f0-e29a-4030-8341-6dab30d7f14f}*SharedItemsImports = 4
 		DN_DeviceId\DN_DeviceId.vcxitems*{83a152f0-e29a-4030-8341-6dab30d7f14f}*SharedItemsImports = 4
 		Dn_Memory\Dn_Memory.vcxitems*{83a152f0-e29a-4030-8341-6dab30d7f14f}*SharedItemsImports = 4
 		DN_MQTT\DN_MQTT.vcxitems*{83a152f0-e29a-4030-8341-6dab30d7f14f}*SharedItemsImports = 4
@@ -73,8 +82,11 @@ Global
 		DN_Value\DN_Value.vcxitems*{83a152f0-e29a-4030-8341-6dab30d7f14f}*SharedItemsImports = 4
 		DN_Value_int\DN_Value_int.vcxitems*{83a152f0-e29a-4030-8341-6dab30d7f14f}*SharedItemsImports = 4
 		DN_WIFI\DN_WIFI.vcxitems*{83a152f0-e29a-4030-8341-6dab30d7f14f}*SharedItemsImports = 4
+		DN_ComEntity\DN_ComEntity.vcxitems*{a325c672-2ca7-400a-88b3-e58cd2a4ea8f}*SharedItemsImports = 9
 		DN_Object\DN_Object.vcxitems*{c5d309ad-c875-4e8f-92d5-56d16925653d}*SharedItemsImports = 9
 		ArduinoJson\ArduinoJson.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		DN_ComEntity\DN_ComEntity.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		DN_ComManager\DN_ComManager.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		DN_DeviceId\DN_DeviceId.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		Dn_Memory\Dn_Memory.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		DN_MQTT\DN_MQTT.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
