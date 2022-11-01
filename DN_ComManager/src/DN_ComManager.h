@@ -75,24 +75,24 @@ private:
 	Timeout correspond au temps maximum autorisé entre deux messages(communicatio fermée au dela):
 	Retourne -1 Si aucun channel n'est dispo
 	*/
-	int getNewCom(int timeOut);
+	int getNewCom(const int timeOut);
 
 	/*
 	*Genere l'entete dediée au protocole multiCom 
 	*/
-	void generateMultiComHeader(char header[150], char comId[25], int step, int duplicationSafe, bool endCom, bool sucess = true);
+	void generateMultiComHeader(const char header[150], const char comId[25], const int step, const int duplicationSafe, const bool endCom, const bool sucess = true);
 
 	/*
 	Retourne vrai si il y a bien une communication en cours avec le comNo
 	passé en parametre*/
-	bool is_ComNo_Valid(int comNo);
+	bool is_ComNo_Valid(const int comNo);
 
 	/*
 	Retourne une reference vers le canal qui contient la com dont le
 	numero est passé en parametre
 	Attention a bien utilise is_ComNo_Valid() avant
 	*/
-	DN_ComCanal& getCom(int comNo);
+	DN_ComCanal& getCom(const int comNo);
 };
 
 #endif

@@ -24,7 +24,12 @@ int DN_ComManager::initCom(const char externalDeviceId[19], const unsigned int t
 
 }
 
-int DN_ComManager::getNewCom(int timeOut)
+bool DN_ComManager::messageAvailable(const int comNo)
+{
+	return false;
+}
+
+int DN_ComManager::getNewCom(const int timeOut)
 {
 	//Recherche d'une canal libre
 	unsigned int channel_pos = 0;//La position du chanel dans le tbl canaux
@@ -47,12 +52,12 @@ int DN_ComManager::getNewCom(int timeOut)
 
 }
 
-void DN_ComManager::generateMultiComHeader(char header[150], char comId[25], int step, int duplicationSafe, bool endCom, bool sucess)
+void DN_ComManager::generateMultiComHeader(const char header[150], const char comId[25], const int step, const int duplicationSafe, const bool endCom, const bool sucess)
 {
 	snprintf(header, 150, "{\"comId\": \"%s\", \"step\":%d,\"duplicationSafe\":%d,\"endCom\":%d,\"sucess\":%d}", comId, step, duplicationSafe, endCom, sucess);
 }
 
-bool DN_ComManager::is_ComNo_Valid(int comNo)
+bool DN_ComManager::is_ComNo_Valid(const int comNo)
 {
 	for (int i = 0; i < MAX_COM_CHANNEL; i++) {
 		if (canaux[i].is_ComNo(comNo)) return true;
@@ -60,7 +65,7 @@ bool DN_ComManager::is_ComNo_Valid(int comNo)
 	return false;
 }
 
-DN_ComCanal& DN_ComManager::getCom(int comNo)
+DN_ComCanal& DN_ComManager::getCom(const int comNo)
 {
 	if (!this->is_ComNo_Valid(comNo)) Serial.println("[comManager] Accès a une communication innexistante... risque de plantage elevé");
 	unsigned int channel_pos = 0;//La position du chanel dans le tbl canaux
