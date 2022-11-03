@@ -1,29 +1,38 @@
 /*
- Name:		DN_ComEntity.cpp
- Created:	28/10/2022 16:02:33
+ Name:		DN_ComCanal.cpp
+ Created:	02/11/2022 16:42:54
  Author:	Herve
  Editor:	http://www.visualmicro.com
 */
 
-#include "DN_ComEntity.h"
+#include "DN_ComCanal.h"
+
+DN_ComCanal::DN_ComCanal(){
+	closeCom();
+}
 
 bool DN_ComCanal::is_free()
 {
-	return free;
+	return !used;
 }
 
-bool DN_ComCanal::is_ComNo(int comNo)
+bool DN_ComCanal::is_ComNo(int comNo_)
 {
-	return (this->comNo == comNo && !is_free());
+	return (this->comNo == comNo_ && !is_free());
+}
+
+bool DN_ComCanal::is_ComId(const char* comId)
+{
+	return ((strcmp(this->comId, comId) == 0) && !is_free());
 }
 
 bool DN_ComCanal::startCanal(const int comNo, const unsigned int timeOut)
 {
-	if (!is_free) return false;
-	this->free = false;
 	this->comNo = comNo;
 	this->timeOut = timeOut;
 	this->lastActivity = millis();
+	used = true;
+
 	return true;
 }
 
@@ -45,7 +54,7 @@ bool DN_ComCanal::availableMsg()
 
 char DN_ComCanal::getMessage(char* message, int& len)
 {
-	const char inMsgLen = strlen(message);
+	const int inMsgLen = strlen(message);
 	if (!ready) {
 		Serial.println("[Com entity] La com n'est pas setup, lecture des messages impossible");
 		len = 1;
@@ -53,6 +62,7 @@ char DN_ComCanal::getMessage(char* message, int& len)
 		return -2;
 	}
 	if (!this->availableMsg()) {
+		Serial.println("[Com entity] La com n'a pas de nouveau message");
 		len = 1;
 		strcpy(message, "");
 		return 0;
@@ -66,14 +76,22 @@ char DN_ComCanal::getMessage(char* message, int& len)
 
 	strncpy(message, this->inMessage, len);
 	len = inMsgLen;
+	strncpy(this->inMessage, "", 1);
+	newMessage = false;
+
 	return 1;
 }
 
-void DN_ComCanal::handleNewMessage(const char* IncommingMessage, const int len)
+void DN_ComCanal::handleNewMessage(const char* IncommingMessage)
 {
-	StaticJsonDocument<364> doc;
-	StaticJsonDocument<100> multiComHeaderJson;
+	if (!ready) {
+		Serial.println("[ComCanal] canal is not ready for reception");
+		return;
+	}
+
 	StaticJsonDocument<300> data;
+	StaticJsonDocument<100> multiComHeaderJson;
+	StaticJsonDocument<364> doc;
 	DeserializationError error;
 
 	char messageLocalCopy[500];
@@ -83,13 +101,13 @@ void DN_ComCanal::handleNewMessage(const char* IncommingMessage, const int len)
 	bool endComReceived;
 
 	strncpy(messageLocalCopy, IncommingMessage, 500);
-	error = deserializeJson(doc, messageLocalCopy, 500);
+	error = deserializeJson(doc, messageLocalCopy);
 	if (error) {
 		Serial.print(F("[ComCanal] deserializeJson() handleNewMessage failed: "));
 		Serial.println(error.f_str());
 		return;
 	}
-
+	
 	if (doc["multiComHeader"].isNull()) {
 		Serial.println("[DN_ComCanal] multicom header missing (handleNewMessage)");
 		return;
@@ -130,12 +148,30 @@ void DN_ComCanal::handleNewMessage(const char* IncommingMessage, const int len)
 	else {
 		data["comStatus"] = "open";// l'objet distant attend une reponse
 	}
-	
+
 	serializeJson(data, inMessage);
 	newMessage = true;
+	lastActivity = millis();
 	return;
 }
 
+void DN_ComCanal::sendMessage(const char* message)
+{
+	if (!ready) {
+		Serial.println("[ComCanal] canal is not ready for sending"); 
+		return;
+	}
+	char topic[40]{};
+	snprintf(topic, 40, "com/%s/multiCom", externalDeviceId);
+	mqttManager->sendMessage(topic, message);
+	lastActivity = millis();
+
+}
+
+void DN_ComCanal::setMqttManager(DN_MQTTclass* mqtt)
+{
+	this->mqttManager = mqtt;
+}
 
 bool DN_ComCanal::checkDuplicationSafe(const int receivedStep, const int receivedDuplicationSafe)
 {
@@ -143,4 +179,41 @@ bool DN_ComCanal::checkDuplicationSafe(const int receivedStep, const int receive
 		return true;
 	}
 	return false;
+}
+
+void DN_ComCanal::handle() {
+	checkTimeOut();
+}
+
+void DN_ComCanal::checkTimeOut()
+{
+	if (!used) return;
+	if (millis() - lastActivity < timeOut) return;
+	lastActivity = millis();
+
+	if (!endCom) {
+		endCom = true;
+		strcpy(inMessage, "{\"comStatus\": \"timed_out\"}");
+		newMessage = true;
+		//Serial.println(inMessage);
+	}
+	else {
+		closeCom();
+	}
+}
+
+void DN_ComCanal::closeCom()
+{
+	this->comNo = 0;
+	this->timeOut = 0;
+	this->lastActivity = 0;
+	duplicationSafe = 0;
+	step = 0;
+	strcpy(this->externalDeviceId, "");
+	strcpy(this->comId, "");
+	newMessage = false;
+	strcpy(inMessage, "");
+	endCom = false;
+	ready = false;
+	used = false;
 }

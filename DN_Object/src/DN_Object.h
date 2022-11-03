@@ -21,6 +21,8 @@
 #include <DN_WIFI.h>
 #include <DN_MQTT.h>
 #include <ArduinoJson.h>
+#include <DN_ComManager.h>
+
 class DN_Object;
 
 struct comLogger {//stock les informations sur les communications en cours
@@ -43,6 +45,7 @@ struct comLogger {//stock les informations sur les communications en cours
 class DN_Object :DN_INTERFACEMQTT
 {
 public:
+	DN_ComManager comManager;
 	DN_Object(DN_MQTTclass& mqttBorker, DN_WIFIClass& wifiManager_, DN_DeviceId& deviceId_);
 
 	void handle();

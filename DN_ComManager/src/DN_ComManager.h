@@ -14,17 +14,20 @@
 	#include "WProgram.h"
 #endif
 #define MAX_COM_CHANNEL 5
-#include <DN_ComEntity.h>
+#include "C:\Users\Herve\source\repos\DN_Base3\DN_ComCanal\src\DN_ComCanal.h"
+#include <ArduinoJson.h>
+#include <DN_DeviceId.h>
+#include <DN_MQTT.h>
 
 class DN_ComManager {
 public:
 	//Constructeur
-	DN_ComManager();
+	DN_ComManager(DN_DeviceId& device_id, DN_MQTTclass* mqttManager);
 
 
 	/* Demarre une communication, retourne le numero de la nouvelle communication
-	 * (-1 en cas d'erreur). 
-	 * 
+	 * (-1 en cas d'erreur).
+	 *
 	 * La demande de communication est envoyé au serveur distant, une fois la communication établie
 	 * un nouveau message sera disponible avec le champ "comStatus".
 	 *		- si comStatus = open -> la connection a reussi
@@ -32,9 +35,9 @@ public:
 	 *      -			   = close -> la connection à été fermé par l'objet distant
 	 * Timeout correspond au temps maximum autorisé entre deux messages(communicatio fermée au dela)
 	 */
-	int initCom(const char externalDeviceId[19], const unsigned int timeOut);
+	int initCom(const char externalDeviceId[19], int timeOut);
 
-	/* Retourne Vrai si un nouveau message est en attente sur la communication dont le 
+	/* Retourne Vrai si un nouveau message est en attente sur la communication dont le
 	 * numéro est passé en paramètre,
 	 * Faux sinon
 	 */
@@ -43,23 +46,40 @@ public:
 	/* Remplace le contenue du parametre res par le message présent en entrée dans le buffer de la communication
 	 * Si aucun message n'est présent res = ""
 	 * len correspond a la taille maximal de res
-	 * 
+	 *
 	 * Une fois le contenue lue, le  buffer est vidé, le message ne peut donc pas être lue deux fois
 	 * Si la com n'existe pas rien est fait
 	 */
-	void getMessage(const int comNo, char* res, const int len);
+	void getMessage(const int comNo, char* res, int len);
 
 	/* Envoie le contenue de message sur la communication et renvoie vraie
 	 * Si la communication est déja en attente d'une reponse(un message a deja ete envoyé),
 	 * le message est ignoré et la fonction retourne faux
 	 * Si la com n'existe pas rien est fait et la fonciton retourne faux
-	 * 
+	 *
 	 * si closeCom == true, la communication est fermée de facons propre et la partie distante en est informée
 	 */
 	bool sendMessage(const int comNo, const char* message, bool closeCom);
 
+	/*
+	Retourne vrai si il y a bien une communication en cours avec le comNo
+	passé en parametre*/
+	bool is_ComNo_Valid(const int comNo);
+
+	/*
+	* Routing the incomming mqtt message to the good chanel
+	*/
+	void handleMqtt(const char* msg);
+	/*
+	* Permet de gerer les taches de fond
+	*/
+	void handle();
 
 private:
+
+	/*reference vers le gestionnaire d'id de l'objet*/
+	DN_DeviceId& device_id;
+
 	/*
 	Les differents canaux de communication permettant de gerer plusieurs
 	communication en même temps. Le nombre de communication simultannées maximum
@@ -70,22 +90,18 @@ private:
 
 
 	/*
-	Crée une nouvelle communication sur un des canaux libre, 
+	Crée une nouvelle communication sur un des canaux libre,
 	le numéro de cette communication est renvoyé
 	Timeout correspond au temps maximum autorisé entre deux messages(communicatio fermée au dela):
 	Retourne -1 Si aucun channel n'est dispo
 	*/
-	int getNewCom(const int timeOut);
+	int getNewCom(int timeOut);
 
 	/*
-	*Genere l'entete dediée au protocole multiCom 
+	*Genere l'entete dediée au protocole multiCom
 	*/
-	void generateMultiComHeader(const char header[150], const char comId[25], const int step, const int duplicationSafe, const bool endCom, const bool sucess = true);
+	void generateMultiComHeader(char header[150], const char comId[25], const int step, const int duplicationSafe, const bool endCom);
 
-	/*
-	Retourne vrai si il y a bien une communication en cours avec le comNo
-	passé en parametre*/
-	bool is_ComNo_Valid(const int comNo);
 
 	/*
 	Retourne une reference vers le canal qui contient la com dont le
@@ -93,6 +109,21 @@ private:
 	Attention a bien utilise is_ComNo_Valid() avant
 	*/
 	DN_ComCanal& getCom(const int comNo);
+
+
+	/*
+	Retourne vrai si il y a bien une communication en cours avec le comId
+	passé en parametre*/
+	bool is_ComId_Valid(const char* comId);
+	/*
+	Retourne une reference vers le canal qui contient la com dont le
+	Id est passé en parametre
+	Attention a bien utilise is_ComId_Valid() avant
+	*/
+	DN_ComCanal& getCom(const char* comId);
+
+
+
 };
 
 #endif

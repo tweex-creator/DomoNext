@@ -3,7 +3,7 @@
  Created:	27/10/2022 11:37:24
  Author:	Herve
 */
-
+#include "Arduino.h"
 #include <DN_Value_int.h>
 
 #include <DN_Memory.h>
@@ -20,8 +20,11 @@ DN_MQTTclass mqttManagerGlobal(memoryManagerGlobal, wifiManagerGlobal, deviceIdG
 
 #include <DN_Object.h>
 DN_Object obj1(mqttManagerGlobal, wifiManagerGlobal, deviceIdGlobal);
+
+
 PubSubClient client;
 WiFiClient espClient;
+
 
 void setup() {
 
@@ -39,59 +42,39 @@ void setup() {
 }
 
 unsigned long temps = 0;
+bool first = true;
 int comNo = -1;
 bool onlyOne = true;
-unsigned long time_ = 0;
 bool test =false;
 
 void loop()
 {
-	DynamicJsonDocument msgDoc(64);
-
-	if (test) Serial.println("loop 1 ");
 	wifiManagerGlobal.handle();
-	if (test) Serial.println("loop 2 ");
 	mqttManagerGlobal.handle();
-	if (test) Serial.println("loop 3 ");
 	deviceIdGlobal.handle();
-	if (test) Serial.println("loop 4 ");
+	obj1.comManager.handle();
 	obj1.handle();
-	if (test) Serial.println("loop 5 ");
-	test = false;
 
 	if (mqttManagerGlobal.isConnected()) {
-		if (millis() - time_ > 20000) {
-			time_ = millis();
-			comNo = obj1.initCom("AC:0B:FB:DD:13:43", 6000);
-			obj1.printComUsage();
-		}
-		if (comNo != -1) {
-			if (obj1.availableMsgCom(comNo)) {
-				test = true;
-				char msg_[25];
+		if (millis() - temps > 60000 ||first) {
+			first = false;
+			Serial.println("envoie msg");
 
-				obj1.readMsgCom(comNo, msg_);
-				const char* cstMsg = msg_;
-				Serial.print("msg recus via com(");
-				Serial.print(comNo);
-				Serial.print("): ");
-				Serial.println(cstMsg);
-				/*deserializeJson(msgDoc, cstMsg, 25);
-				const char* data = msgDoc["comStatus"];
-				Serial.print("msg recus via com2(");
-				Serial.print(comNo);
-				Serial.print("): "); 
-				Serial.println(data);
-				/*if (msgDoc.containsKey("comStatus")) {
-					const char* comStatus = msgDoc["comStatus"];
-					if (strcmp(comStatus,"open") == 0) {
-						Serial.println("open");
-						obj1.sendMsgCom(comNo, "{\"dataTest\": true}",true);
-						Serial.println("open2");
-					}
-				}*/			
-			}
+			temps = millis();
+			comNo = obj1.comManager.initCom("AC:0B:FB:DD:13:96", 59000);
+			Serial.print(comNo);
+			Serial.println(": send");
+			//obj1.printComUsage();
+		}
+		if (!obj1.comManager.is_ComNo_Valid(comNo)) {
+			comNo = -1;
+		}
+		if (comNo != -1 && obj1.comManager.messageAvailable(comNo)) {
+			char received[500];
+			obj1.comManager.getMessage(comNo, received, 500);
+			Serial.println("Message recus: ");
+			Serial.println(received);
+			test = true;
 		}
 	}
-	if (test) Serial.println("loop 6 ");
 }

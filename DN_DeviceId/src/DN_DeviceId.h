@@ -35,7 +35,7 @@ public:
 	void getId(char id_[4]);
 	void getName(char name_[26]);
 	void getMac(char mac_[19]);
-
+	void getIdOrMac(char id_Mac[19]);//retourne l'id de l'appareil ou l'addresse mac lorsque l'id n'est pas definie
 	void reset();
 
 	void handle();

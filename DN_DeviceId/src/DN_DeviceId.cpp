@@ -129,4 +129,12 @@ void DN_DeviceId::getMac(char mac_[19])
 
 }
 
+void DN_DeviceId::getIdOrMac(char id_Mac[19])
+{
+	this->getId(id_Mac);
+	if (strcmp(id_Mac, "ZZZ") != 0) return;
+	this->getMac(id_Mac);
+
+}
+
 

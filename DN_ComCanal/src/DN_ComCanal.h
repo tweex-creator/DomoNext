@@ -14,6 +14,8 @@
 	#include "WProgram.h"
 #endif
 
+#include <ArduinoJson.h>
+#include <DN_MQTT.h>
 class DN_ComCanal {
 public:
 
@@ -28,6 +30,11 @@ public:
 	  passé en parametre
 	 */
 	bool is_ComNo(int comNo);
+
+	/*Retourne vrai si il y a bien une communication en cours avec le comId
+	  passé en parametre
+	 */
+	bool is_ComId(const char* comId);
 
 	/*
 	Initialise le canal pour une communication donnée
@@ -59,13 +66,24 @@ public:
 	* Process les nouveaux message en provenance de l'objet distant. 
 	* Le contenu a destination de l'objet est stocké dans inMessage et le falg newMessage est mis à 1
 	*/
-	void handleNewMessage(const char* IncommingMessage, const int len);
+	void handleNewMessage(const char* IncommingMessage);
+
+	/*
+	* Envoie le message vers l'objet distant, à conditions que le canal soit pret(redy == true) et qu'aucun message n'est déja eté envoyé depuis la dernière reception
+	*/
+	void sendMessage(const char* message);
 
 
+	void setMqttManager(DN_MQTTclass*);
+
+	//a appelé regulièrement pour gerer les taches de fonds du canal
+	void handle();
 private:
-	bool free;//Stock si le canal est actuellement utilisé par une communication
+	DN_MQTTclass* mqttManager;
+	
+	
 	bool ready;//Permet de ne pas envoyer de message tant que la connection n'est pas configurée
-
+	bool used;//inidque si le canal est utilisé
 	char externalDeviceId[19];//Stock l'id de l'appareil distant (attention il peut s'agir d'une adresse mac si ce dernié n'est pas config d'ou le len)
 	char comId[26];//Stock l'id de la communication actuellment en cours sur le canal
 	int step;//Le nombre d'echange(reussi) qui ont déja eu lieu entre les deux objets
@@ -73,10 +91,10 @@ private:
 	int comNo;//Le numero d'identification de la communication(propre a l'objet, il peut être different sur l'objet distant)
 	unsigned int timeOut;//Le timeOut de la communication en cours.Correspond au temps maximum autorisé entre deux messages(communication fermée au dela)
 	unsigned long lastActivity;//Stock le dernier millis() au quel la communication recus/emis un message, permet la fermeture auto avec timeOut
-
+	
 	char inMessage[500];// Contient le dernier message recus sur le canal.
 	bool newMessage;// flag indiqaunt la presence d'un message non lu dans le buffer inMessage
-
+	bool endCom;//Indique si la communication est terminée
 
 	/*
 	* Verifie la validité des champs step et duplicationSafe recus.
@@ -84,7 +102,14 @@ private:
 	* renvoie faux. Vraie sinon
 	*/
 	bool checkDuplicationSafe(const int receivedStep, const int receivedDuplicationSafe);
+	
+	//Verifie que la communication n'est pas expirer et agit si besoin
+	void checkTimeOut();
 
+	/*
+	* Ferme definitivement la communication et libère le canal
+	*/
+	void closeCom();
 
 };
 

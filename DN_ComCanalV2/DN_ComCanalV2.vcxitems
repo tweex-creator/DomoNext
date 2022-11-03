@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <ItemsProjectGuid>{a325c672-2ca7-400a-88b3-e58cd2a4ea8f}</ItemsProjectGuid>
+    <ItemsProjectGuid>{acc6df3b-edae-4c78-9b58-794082c38801}</ItemsProjectGuid>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -16,12 +16,12 @@
   <ItemGroup>
     <Text Include="$(MSBuildThisFileDirectory)readme.txt" />
 	<Text Include="$(MSBuildThisFileDirectory)library.properties" />
-  	<Text Include="$(MSBuildThisFileDirectory)src\DN_ComEntity.h" />
+  	<Text Include="$(MSBuildThisFileDirectory)src\DN_ComCanalV2.h" />
   </ItemGroup>
  <ItemGroup>
-    <!-- <ClInclude Include="$(MSBuildThisFileDirectory)DN_ComEntity.h" /> -->
+    <!-- <ClInclude Include="$(MSBuildThisFileDirectory)DN_ComCanalV2.h" /> -->
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\DN_ComEntity.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\DN_ComCanalV2.cpp" />
   </ItemGroup>
   </Project>

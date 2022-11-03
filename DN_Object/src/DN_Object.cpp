@@ -11,7 +11,7 @@
 DN_Object* ptrToObj;
 
 
-DN_Object::DN_Object(DN_MQTTclass& mqttBorker_, DN_WIFIClass& wifiManager_, DN_DeviceId& deviceId_) :brokerMqtt(mqttBorker_), deviceId(deviceId_), wifiManager(wifiManager_), data(2048)
+DN_Object::DN_Object(DN_MQTTclass& mqttBorker_, DN_WIFIClass& wifiManager_, DN_DeviceId& deviceId_) :brokerMqtt(mqttBorker_), deviceId(deviceId_), wifiManager(wifiManager_), data(2048), comManager(deviceId_, &mqttBorker_)
 {
 }
 
@@ -66,7 +66,12 @@ void DN_Object::subMqtt()
 void DN_Object::handleMqttMsg(JsonDocument& docMsgReceived) {
 
 	if (!docMsgReceived["multiComHeader"].isNull()) {
-		proceedCom(docMsgReceived);
+		Serial.println("recus!!");
+		char msg[500];
+		StaticJsonDocument<400> docMsgReceivedLocal = docMsgReceived;
+		serializeJson(docMsgReceivedLocal, msg, 500);
+		comManager.handleMqtt(msg);
+		Serial.println("[object] routage ok 2");
 
 	}
 
