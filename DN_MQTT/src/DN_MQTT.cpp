@@ -31,7 +31,7 @@ void callbackHandle(char* topic, byte* payload, unsigned int length) {
 
 }
 
-DN_MQTTclass::DN_MQTTclass(DN_Memory& littleFsManagerProject, DN_WIFIClass& wifiManagerProject, DN_DeviceId& deviceId_) : memoryManager(littleFsManagerProject), wifiManager(wifiManagerProject), client(espClient), deviceId(deviceId_), docMsgReceived(NB_MAX_MQTT_JSON_SIZE)
+DN_MQTTclass::DN_MQTTclass(DN_Memory& littleFsManagerProject, DN_WIFIClass& wifiManagerProject, DN_DeviceId& deviceId_) : memoryManager(littleFsManagerProject), wifiManager(wifiManagerProject), client(espClient), deviceId(deviceId_)
 {
 	client.setClient(espClient);
 	char ipServer[16];
@@ -106,26 +106,21 @@ void DN_MQTTclass::setupCallBack()
 
 void DN_MQTTclass::callback(char* topic, byte* payload, unsigned int length)
 {
+	DynamicJsonDocument docMsgReceived(1024); //Le json qui contient le message recus
 	char msg[1024];
-	char msg1[1024];
-	//Serial.println("msg");
 
 	for (int i = 0; i < length; i++) {
 		msg[i] = (char)payload[i];
-		msg1[i] = (char)payload[i];
 
 	}
 	msg[length] = '\0';
-	msg1[length] = '\0';
-
-	DeserializationError err = deserializeJson(docMsgReceived, msg);
-
+	DeserializationError err = deserializeJson(docMsgReceived, (const char*)msg);
 	if (err) {
 		Serial.print(F("deserializeJson() d'un msg entrant failed: "));
 		Serial.println(err.c_str());
 		docMsgReceived.clear();
 		docMsgReceived["JsonFormat"] = false;
-		docMsgReceived["payload"] = msg1;
+		docMsgReceived["payload"] = msg;
 	}
 	else {
 		docMsgReceived["JsonFormat"] = true;
@@ -138,9 +133,9 @@ void DN_MQTTclass::callback(char* topic, byte* payload, unsigned int length)
 		for (int i = 0; i < NB_MAX_MQTT_INTERFACE; i++) {
 
 			if (receiver[i] != nullptr) {
-				//serializeJsonPretty(docMsgReceived, Serial);
-				receiver[i]->handleMqttMsg(docMsgReceived);
-
+				serializeJson(docMsgReceived, msg);
+				receiver[i]->handleMqttMsg(msg);
+				Serial.println("handle msg mqtt done");
 			}
 		}
 	}

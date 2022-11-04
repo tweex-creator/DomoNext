@@ -45,7 +45,7 @@ public:
 	/*
 	Permet de configurer le canal, doit être appelé avant d'envoyer/ lire des message
 	*/
-	void setupCanal(const char externalDeviceId[19], const char comId[26]);
+	void setupCanal(const char externalDeviceId[19], const char comId[26], const int step = 0, const int duplicationSafe = 0);
 
 	/*
 	* Indique si un nouveau message est en attente de lecture.
@@ -70,8 +70,10 @@ public:
 
 	/*
 	* Envoie le message vers l'objet distant, à conditions que le canal soit pret(redy == true) et qu'aucun message n'est déja eté envoyé depuis la dernière reception
+	* ATTENTION, ne sert que pour le declenchement de la communication, le header n'est pas raouter(doit être fait manuellement)
+	* 
 	*/
-	void sendMessage(const char* message);
+	void sendBrutMessage(const char* message, const int step);
 
 
 	void setMqttManager(DN_MQTTclass*);

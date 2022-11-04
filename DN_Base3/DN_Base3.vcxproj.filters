@@ -18,24 +18,7 @@
     <None Include="DN_Base3.ino" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DN_Value_Base.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DN_Value_int.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="DN_Value_Base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DN_Value_int.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="__vm\.DN_Base3.vsarduino.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ArduinoJson-v6.19.4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

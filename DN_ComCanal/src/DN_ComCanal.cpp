@@ -36,7 +36,7 @@ bool DN_ComCanal::startCanal(const int comNo, const unsigned int timeOut)
 	return true;
 }
 
-void DN_ComCanal::setupCanal(const char externalDeviceId[19], const char comId[26])
+void DN_ComCanal::setupCanal(const char externalDeviceId[19], const char comId[26], const int step, const int duplicationSafe)
 {
 	if (ready) {
 		Serial.println("[ComCanal] Liberer d'abord le canal avant de pouvoir le configurer à nouveau");
@@ -44,6 +44,8 @@ void DN_ComCanal::setupCanal(const char externalDeviceId[19], const char comId[2
 	}
 	strcpy(this->externalDeviceId, externalDeviceId);
 	strcpy(this->comId, comId);
+	this->step = step;
+	this->duplicationSafe = duplicationSafe;
 	ready = true;
 }
 
@@ -88,20 +90,19 @@ void DN_ComCanal::handleNewMessage(const char* IncommingMessage)
 		Serial.println("[ComCanal] canal is not ready for reception");
 		return;
 	}
-
-	StaticJsonDocument<300> data;
-	StaticJsonDocument<100> multiComHeaderJson;
-	StaticJsonDocument<364> doc;
+	DynamicJsonDocument data(300);
+	DynamicJsonDocument multiComHeaderJson(300);
+	DynamicJsonDocument doc(768);
 	DeserializationError error;
 
-	char messageLocalCopy[500];
+	//char messageLocalCopy[500];
 
 	int stepReceived;
 	int duplicationSafeReceived;
 	bool endComReceived;
 
-	strncpy(messageLocalCopy, IncommingMessage, 500);
-	error = deserializeJson(doc, messageLocalCopy);
+	//strncpy(messageLocalCopy, IncommingMessage, 500);
+	error = deserializeJson(doc, IncommingMessage);
 	if (error) {
 		Serial.print(F("[ComCanal] deserializeJson() handleNewMessage failed: "));
 		Serial.println(error.f_str());
@@ -155,17 +156,18 @@ void DN_ComCanal::handleNewMessage(const char* IncommingMessage)
 	return;
 }
 
-void DN_ComCanal::sendMessage(const char* message)
+void DN_ComCanal::sendBrutMessage(const char* message, const int step)
 {
 	if (!ready) {
 		Serial.println("[ComCanal] canal is not ready for sending"); 
 		return;
 	}
-	char topic[40]{};
-	snprintf(topic, 40, "com/%s/multiCom", externalDeviceId);
+	char topic[11] = "testTopic";
+	//snprintf(topic, 40, "com/%s/multiCom", externalDeviceId);
 	mqttManager->sendMessage(topic, message);
 	lastActivity = millis();
-
+	duplicationSafe++;
+	this->step = step;
 }
 
 void DN_ComCanal::setMqttManager(DN_MQTTclass* mqtt)

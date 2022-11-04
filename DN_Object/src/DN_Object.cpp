@@ -63,18 +63,13 @@ void DN_Object::subMqtt()
 	deviceId.getId(lastSubId);//on met a jour le dernier id sauvegardé
 }
 
-void DN_Object::handleMqttMsg(JsonDocument& docMsgReceived) {
+void DN_Object::handleMqttMsg(const char* message) {
 
+	DynamicJsonDocument docMsgReceived(1024);
+	deserializeJson(docMsgReceived, message);
 	if (!docMsgReceived["multiComHeader"].isNull()) {
-		Serial.println("recus!!");
-		char msg[500];
-		StaticJsonDocument<400> docMsgReceivedLocal = docMsgReceived;
-		serializeJson(docMsgReceivedLocal, msg, 500);
-		comManager.handleMqtt(msg);
-		Serial.println("[object] routage ok 2");
-
+		comManager.handleMqtt(message);
 	}
-
 }
 
 
@@ -298,7 +293,6 @@ void DN_Object::forceCloseCom(comLogger* com)
 	brokerMqtt.sendMessage(topic, msg);
 	freeComLogger(com);
 }
-
 
 
 void DN_Object::sendJsonDocOverMqtt(JsonDocument& message, char* topic)
@@ -606,6 +600,7 @@ void DN_Object::printComUsage()
 
 void DN_Object::handle()
 {
+	comManager.handle();
 	/*if (connectServerState != 1) {
 		//connectServer();
 	}

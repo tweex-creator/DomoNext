@@ -84,16 +84,6 @@ Global
 		DN_Value_int\DN_Value_int.vcxitems*{83a152f0-e29a-4030-8341-6dab30d7f14f}*SharedItemsImports = 4
 		DN_WIFI\DN_WIFI.vcxitems*{83a152f0-e29a-4030-8341-6dab30d7f14f}*SharedItemsImports = 4
 		DN_Object\DN_Object.vcxitems*{c5d309ad-c875-4e8f-92d5-56d16925653d}*SharedItemsImports = 9
-		ArduinoJson\ArduinoJson.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
-		DN_ComCanal\DN_ComCanal.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
-		DN_ComManager\DN_ComManager.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
-		DN_DeviceId\DN_DeviceId.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
-		Dn_Memory\Dn_Memory.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
-		DN_MQTT\DN_MQTT.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
-		DN_Object\DN_Object.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
-		DN_Value\DN_Value.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
-		DN_Value_int\DN_Value_int.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
-		DN_WIFI\DN_WIFI.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		DN_DeviceId\DN_DeviceId.vcxitems*{f35b6ea3-5315-4cf7-8398-7f84e8d4fc5b}*SharedItemsImports = 9
 	EndGlobalSection
 EndGlobal

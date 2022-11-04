@@ -52,16 +52,14 @@ void loop()
 	wifiManagerGlobal.handle();
 	mqttManagerGlobal.handle();
 	deviceIdGlobal.handle();
-	obj1.comManager.handle();
 	obj1.handle();
 
 	if (mqttManagerGlobal.isConnected()) {
-		if (millis() - temps > 60000 ||first) {
+		if (millis() - temps > 2000 ||first) {
 			first = false;
-			Serial.println("envoie msg");
 
 			temps = millis();
-			comNo = obj1.comManager.initCom("AC:0B:FB:DD:13:96", 59000);
+			comNo = obj1.comManager.initCom("AC:0B:FB:DD:13:43", 1800);
 			Serial.print(comNo);
 			Serial.println(": send");
 			//obj1.printComUsage();

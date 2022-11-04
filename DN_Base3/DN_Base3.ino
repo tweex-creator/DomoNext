@@ -1,84 +1,30 @@
 
-
-//COM 4
-
-#include "DN_Value_int.h"
-#include "DN_Value_Base.h"
-
-#include <DN_Memory.h>
-DN_Memory memoryManagerGlobal;
-
-#include <DN_DeviceId.h>
-DN_DeviceId deviceIdGlobal(memoryManagerGlobal);
-
-#include <DN_WIFI.h>
-DN_WIFIClass wifiManagerGlobal("123456789", memoryManagerGlobal, deviceIdGlobal);
-
-#include <DN_MQTT.h>
-DN_MQTTclass mqttManagerGlobal(memoryManagerGlobal, wifiManagerGlobal, deviceIdGlobal);
-
-#include <DN_Object.h>
-DN_Object obj1(mqttManagerGlobal, wifiManagerGlobal, deviceIdGlobal);
-PubSubClient client;
-WiFiClient espClient;
-
-void setup() {
-
-
-	Serial.begin(115200);
-	WiFi.disconnect();
-	deviceIdGlobal.loadFromMemory();
-	wifiManagerGlobal.connectMain();
-
-
-	obj1.init();
+void setup(void) {
+    Serial.begin(115200);
 }
 
-unsigned long temps = 0;
-int comNo = -1;
-bool onlyOne = true;
+void loop() {
 
-void loop()
-{
+    uint32_t realSize = ESP.getFlashChipRealSize();
+    uint32_t ideSize = ESP.getFlashChipSize();
+    FlashMode_t ideMode = ESP.getFlashChipMode();
 
-	//if (mqttManagerGlobal.isConnected())  Serial.println("proceed 1");
+    Serial.printf("Flash real id:   %08X\n", ESP.getFlashChipId());
+    Serial.printf("Flash real size: %u bytes\n\n", realSize);
 
-	wifiManagerGlobal.handle();
-	//if (mqttManagerGlobal.isConnected())  Serial.println("proceed 2");
+    Serial.printf("Flash ide  size: %u bytes\n", ideSize);
+    Serial.printf("Flash ide speed: %u Hz\n", ESP.getFlashChipSpeed());
+    Serial.printf("Flash ide mode:  %s\n", (ideMode == FM_QIO ? "QIO" : ideMode == FM_QOUT ? "QOUT"
+        : ideMode == FM_DIO ? "DIO"
+        : ideMode == FM_DOUT ? "DOUT"
+        : "UNKNOWN"));
 
-	mqttManagerGlobal.handle();
-	//if (mqttManagerGlobal.isConnected())  Serial.println("proceed 3");
+    if (ideSize != realSize) {
+        Serial.println("Flash Chip configuration wrong!\n");
+    }
+    else {
+        Serial.println("Flash Chip configuration ok.\n");
+    }
 
-	deviceIdGlobal.handle();
-	//if (mqttManagerGlobal.isConnected())  Serial.println("proceed 4");
-
-	obj1.handle();
-	//if (mqttManagerGlobal.isConnected())  Serial.println("proceed 5");
-
-	//if (false) {
-	if (true) {
-	
-		if (mqttManagerGlobal.isConnected()) {
-			if (onlyOne) {
-				Serial.println("send");
-				onlyOne = false;
-				obj1.closeChannel(1);
-				comNo = obj1.initCom("AC:0B:FB:DD:13:43");
-				//obj1.printComUsage();
-			}
-		}
-
-		if (comNo != -1) {
-			//Serial.println("proceed comMain");
-			if (obj1.availableMsgCom(comNo)) {
-				Serial.println("msg available");
-				char msg[500];
-				obj1.readMsgCom(comNo, msg);
-				Serial.print("msg recus via com(");
-				Serial.print(comNo);
-				Serial.print("): ");
-				Serial.println(msg);
-			}
-		}
-	}
+    delay(5000);
 }

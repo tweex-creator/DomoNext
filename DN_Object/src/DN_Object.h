@@ -50,7 +50,7 @@ public:
 
 	void handle();
 
-	void handleMqttMsg(JsonDocument& docMsgReceived);//Tous les msg passe par ici et son d'abord traiter pour les fonctions interne, ceux qui sont destiner a l'objet sont transmis a handleMqttMsgEndObject
+	void handleMqttMsg(const char* message);//Tous les msg passe par ici et son d'abord traiter pour les fonctions interne, ceux qui sont destiner a l'objet sont transmis a handleMqttMsgEndObject
 	void reset();
 	bool isInJsonArray(const char* value, const JsonArray array);
 

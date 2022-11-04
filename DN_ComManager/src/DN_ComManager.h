@@ -37,6 +37,12 @@ public:
 	 */
 	int initCom(const char externalDeviceId[19], int timeOut);
 
+	/*
+	* Permet de recptioner les demandes de nouvelles connection
+	* elle est appelé lorsqu'une connection dont l'id est inconnue arrive avec step == 0
+	*/
+	int acceptCom(const char* msg);
+
 	/* Retourne Vrai si un nouveau message est en attente sur la communication dont le
 	 * numéro est passé en paramètre,
 	 * Faux sinon
@@ -79,6 +85,9 @@ private:
 
 	/*reference vers le gestionnaire d'id de l'objet*/
 	DN_DeviceId& device_id;
+
+	//Ptr vers le gestionaire mqtt
+	DN_MQTTclass* mqttManager;
 
 	/*
 	Les differents canaux de communication permettant de gerer plusieurs

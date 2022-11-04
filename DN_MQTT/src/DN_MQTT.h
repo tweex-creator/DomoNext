@@ -32,7 +32,7 @@
 
 class DN_INTERFACEMQTT {
 public:
-	virtual void handleMqttMsg(JsonDocument& docMsgReceived) = 0;
+	virtual void handleMqttMsg(const char* docMsgReceived) = 0;
 
 };
 
@@ -58,7 +58,6 @@ protected:
 	JsonArray data;//Pour stocker les tbl temporraire a la crea des msg 
 
 	/// Reception des messages
-	DynamicJsonDocument docMsgReceived; //Le json qui contient le message recus
 	unsigned char nbReceiver;
 	DN_INTERFACEMQTT* receiver[NB_MAX_MQTT_INTERFACE];
 
